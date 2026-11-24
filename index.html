@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>薩爾達傳說 時之笛 (Switch 2 重製版) 陶笛樂譜轉換器</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'Inter', 'sans-serif'],
+            serif: ['Cinzel', '"Noto Sans TC"', 'serif'],
+          },
+          colors: {
+            hyrule: {
+              bg: '#081226',
+              card: '#0f1f3d',
+              cardHover: '#162b52',
+              gold: '#e5c158',
+              goldLight: '#fce596',
+              goldDark: '#a68224',
+              blueGlow: '#38bdf8',
+              emerald: '#34d399',
+              crimson: '#fb7185',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #081226;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(229, 193, 88, 0.09) 0%, transparent 45%),
+        linear-gradient(180deg, #071021 0%, #0b1933 100%);
+      color: #f1f5f9;
+      min-height: 100vh;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #081226;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e3a6e;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #e5c158;
+    }
+
+    /* Gold Ornamental Border */
+    .zelda-panel {
+      background: rgba(15, 31, 61, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(229, 193, 88, 0.3);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(252, 229, 150, 0.15);
+    }
+
+    .zelda-card {
+      background: linear-gradient(160deg, rgba(20, 40, 77, 0.95) 0%, rgba(11, 24, 48, 0.98) 100%);
+      border: 1px solid rgba(229, 193, 88, 0.25);
+      transition: all 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .zelda-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(229, 193, 88, 0.75);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(229, 193, 88, 0.18);
+    }
+    .zelda-card.playing-active {
+      transform: scale(1.06) translateY(-4px);
+      border-color: #38bdf8;
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.55), inset 0 0 12px rgba(56, 189, 248, 0.25);
+      background: linear-gradient(160deg, rgba(26, 62, 117, 0.98) 0%, rgba(15, 36, 72, 0.98) 100%);
+    }
+
+    /* Switch Controller Button Styles */
+    .sw-shoulder {
+      border-radius: 14px 14px 6px 6px;
+      background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+      border: 2px solid #94a3b8;
+      box-shadow: 0 3px 0 #0f172a, 0 0 10px rgba(148, 163, 184, 0.25);
+    }
+    .sw-face-btn {
+      border-radius: 9999px;
+      background: radial-gradient(circle at 35% 30%, #3b4252 0%, #191d24 85%);
+      border: 2px solid #cbd5e1;
+      box-shadow: 0 3px 0 #090b0e, inset 0 1px 2px rgba(255,255,255,0.25);
+    }
+
+    /* Piano Keyboard Styling */
+    .piano-white {
+      background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 92%, #cbd5e1 100%);
+      border: 1px solid #94a3b8;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+      transition: transform 0.08s ease, background 0.1s ease;
+    }
+    .piano-white:active, .piano-white.active-key {
+      transform: translateY(3px);
+      background: linear-gradient(180deg, #fef08a 0%, #fde047 100%);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    .piano-black {
+      background: linear-gradient(180deg, #334155 0%, #0f172a 85%, #020617 100%);
+      border: 1px solid #475569;
+      border-radius: 0 0 6px 6px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.75);
+      transition: transform 0.08s ease, background 0.1s ease;
+    }
+    .piano-black:active, .piano-black.active-key {
+      transform: translateY(3px);
+      background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+    }
+
+    /* Print Mode Optimization */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .zelda-panel, .zelda-card {
+        background: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        color: #0f172a !important;
+      }
+      .print-dark-text {
+        color: #0f172a !important;
+      }
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-hyrule-gold selection:text-slate-900 pb-16">
+
+  <!-- Header Banner -->
+  <header class="border-b border-hyrule-gold/30 bg-[#060e1f]/90 backdrop-blur-md sticky top-0 z-40 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <!-- Triforce + Ocarina SVG Emblem -->
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-hyrule-gold/25 to-sky-500/20 border border-hyrule-gold/50 flex items-center justify-center shadow-inner shrink-0">
+          <svg class="w-7 h-7 text-hyrule-gold" viewBox="0 0 64 64" fill="none">
+            <polygon points="32,8 21,27 43,27" fill="currentColor" opacity="0.95"/>
+            <polygon points="21,27 10,46 32,46" fill="currentColor" opacity="0.85"/>
+            <polygon points="43,27 32,46 54,46" fill="currentColor" opacity="0.85"/>
+            <circle cx="32" cy="54" r="3" fill="#38bdf8"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-hyrule-gold/20 text-hyrule-goldLight border border-hyrule-gold/40">Switch 2 重製版專用</span>
+            <span class="text-xs text-sky-300/90 hidden sm:inline">音域支援：低音 Si (B3) ～ 高音 Fa (F5)（共 19 音）</span>
+          </div>
+          <h1 class="text-lg sm:text-xl font-bold text-white tracking-wide mt-0.5">
+            薩爾達傳說 時之笛 <span class="text-hyrule-gold">陶笛樂譜與指法轉換器</span>
+          </h1>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="toggleGuideModal()" class="px-3 py-2 rounded-lg text-xs sm:text-sm font-medium bg-slate-800/90 hover:bg-slate-700 text-hyrule-goldLight border border-hyrule-gold/30 transition flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>按鍵規則速查</span>
+        </button>
+        <button onclick="window.print()" class="px-3 py-2 rounded-lg text-xs sm:text-sm font-medium bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-600/60 transition flex items-center gap-1.5" title="列印或另存為 PDF 樂譜">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+          <span class="hidden sm:inline">列印譜面</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
+
+    <!-- Top Section: Interactive Virtual Keyboard + Input Area -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 no-print">
+      
+      <!-- Left/Top: Virtual Ocarina Piano Keyboard (7 cols on lg) -->
+      <div class="lg:col-span-7 zelda-panel rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-hyrule-goldLight flex items-center gap-2">
+                <span>🎹 點擊虛擬琴鍵輸入音符</span>
+                <span class="text-xs font-normal text-slate-400">(點擊即聽見陶笛音色並加入樂譜)</span>
+              </h2>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-hyrule-gold/20 text-hyrule-goldLight border border-hyrule-gold/40">
+                <span class="w-2 h-2 rounded-full bg-hyrule-gold"></span> 基礎 5 音 (免推桿)
+              </span>
+            </div>
+          </div>
+
+          <!-- Scrollable Piano Container for Mobile -->
+          <div class="overflow-x-auto pb-2 select-none">
+            <div class="h-44 min-w-[580px] w-full bg-slate-950/80 p-2 rounded-xl border border-slate-700/80">
+              <div id="virtual-piano" class="relative h-full w-full flex">
+                <!-- Piano keys injected via JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preset Zelda Songs Quick Bar -->
+        <div class="mt-4 pt-3.5 border-t border-slate-700/70">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-hyrule-gold tracking-wider uppercase">✨ 經典遊戲曲目範例（點擊一鍵載入）：</span>
+          </div>
+          <div id="preset-buttons" class="flex flex-wrap gap-2">
+            <!-- Preset buttons injected via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right/Bottom: Text Sheet Music Input (5 cols on lg) -->
+      <div class="lg:col-span-5 zelda-panel rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label for="note-input" class="text-base sm:text-lg font-bold text-hyrule-goldLight">
+              📝 樂譜文字輸入區
+            </label>
+            <div class="flex items-center gap-1.5">
+              <button onclick="insertSeparator()" class="px-2.5 py-1 text-xs rounded-md bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-600 transition" title="插入小節分隔線">
+                + 小節線 ( | )
+              </button>
+              <button onclick="clearInput()" class="px-2.5 py-1 text-xs rounded-md bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-800/60 transition">
+                清空
+              </button>
+            </div>
+          </div>
+
+          <textarea
+            id="note-input"
+            rows="5"
+            class="w-full rounded-xl bg-slate-950/90 border border-slate-700 focus:border-hyrule-gold focus:ring-2 focus:ring-hyrule-gold/30 text-slate-100 p-3.5 text-sm sm:text-base font-mono leading-relaxed transition outline-none"
+            placeholder="請輸入音符，用空白或逗號隔開，換行可分段。&#10;例如：Si Re+ La | Sol La Si Re+ La&#10;或音名：B4 D5 A4 | G4 A4 B4 D5 A4&#10;或簡譜：7 2. 6 | 5 6 7 2. 6"
+          ></textarea>
+
+          <!-- Format Helper Legend -->
+          <div class="mt-2.5 bg-slate-900/80 rounded-xl p-3 border border-slate-800 text-xs text-slate-300 space-y-1">
+            <p class="font-semibold text-hyrule-goldLight">支援多種寫法（自動辨識）：</p>
+            <ul class="list-disc list-inside space-y-0.5 text-slate-400">
+              <li><strong class="text-slate-200">唱名：</strong><code class="text-sky-300">Do Re Mi Fa Sol La Si</code>（高音加 <code class="text-sky-300">+</code> 或 <code class="text-sky-300">5</code>，如 <code class="text-sky-300">Re+</code>；低音 Si 寫 <code class="text-sky-300">Si-</code> 或 <code class="text-sky-300">B3</code>）</li>
+              <li><strong class="text-slate-200">音名：</strong><code class="text-sky-300">B3 C4 D4 E4 F4 G4 A4 B4 C5 D5 E5 F5</code></li>
+              <li><strong class="text-slate-200">簡譜：</strong><code class="text-sky-300">.7 1 2 3 4 5 6 7 1. 2. 3. 4.</code>（升降記號寫在前後皆可，如 <code class="text-sky-300">#Fa</code> 或 <code class="text-sky-300">F#4</code>）</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Playback & Control Bar -->
+        <div class="mt-4 pt-3 border-t border-slate-700/70 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <button id="play-btn" onclick="togglePlayMelody()" class="px-4 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-hyrule-gold to-amber-500 hover:from-hyrule-goldLight hover:to-amber-400 text-slate-950 shadow-lg shadow-amber-500/20 transition flex items-center gap-2">
+              <svg id="play-icon" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg>
+              <span id="play-btn-text">試聽陶笛旋律</span>
+            </button>
+            <div class="flex items-center gap-1.5 bg-slate-900 px-2.5 py-2 rounded-xl border border-slate-700">
+              <label for="tempo-select" class="text-xs text-slate-400">速度</label>
+              <select id="tempo-select" class="bg-transparent text-xs font-semibold text-hyrule-goldLight outline-none cursor-pointer">
+                <option value="650" class="bg-slate-900">慢板</option>
+                <option value="460" selected class="bg-slate-900">適中</option>
+                <option value="320" class="bg-slate-900">快板</option>
+              </select>
+            </div>
+          </div>
+
+          <button onclick="copyShareText()" class="px-3 py-2 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 transition flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-hyrule-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+            <span id="copy-status">複製純文字指法表</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Warning / Out-of-Range Notification Banner -->
+    <div id="warning-banner" class="hidden rounded-xl bg-amber-950/80 border border-amber-500/60 p-3.5 text-xs sm:text-sm text-amber-200 flex items-start gap-2.5 no-print">
+      <svg class="w-5 h-5 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      <div id="warning-text"></div>
+    </div>
+
+    <!-- Output Section: Visual Fingering Tablature Cards -->
+    <section class="zelda-panel rounded-2xl p-4 sm:p-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-5 border-b border-hyrule-gold/25">
+        <div>
+          <h2 id="output-song-title" class="text-lg sm:text-xl font-bold text-hyrule-goldLight print-dark-text flex items-center gap-2">
+            <span>🎶 Switch 2 陶笛按鍵指法圖譜</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5 no-print">點擊單張卡片可單獨試聽該音符；部分音符支援「替代按法」，可依手感切換。</p>
+        </div>
+
+        <div class="flex items-center gap-3 text-xs no-print">
+          <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700/80">
+            <span class="w-2.5 h-2.5 rounded-full bg-sky-400 inline-block"></span>
+            <span class="text-slate-300">左搖桿 = 全音 (±2半音)</span>
+          </div>
+          <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700/80">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span>
+            <span class="text-slate-300">十字鍵 = 半音 (±1半音)</span>
+          </div>
+          <span id="note-count-badge" class="px-2.5 py-1.5 rounded-lg bg-hyrule-gold/15 text-hyrule-goldLight border border-hyrule-gold/30 font-semibold">
+            共 0 音
+          </span>
+        </div>
+      </div>
+
+      <!-- Cards Output Container -->
+      <div id="tablature-output" class="space-y-6">
+        <!-- Rendered note rows & cards go here -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Quick Reference Modal (Hidden by default) -->
+  <div id="guide-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 backdrop-blur-sm p-4 no-print">
+    <div class="zelda-panel rounded-2xl max-w-2xl w-full max-h-[88vh] overflow-y-auto p-5 sm:p-6 relative">
+      <div class="flex items-center justify-between pb-3 border-b border-hyrule-gold/30">
+        <h3 class="text-lg font-bold text-hyrule-goldLight">🎮 Switch 2 重製版 陶笛按鍵規則一覽表</h3>
+        <button onclick="toggleGuideModal()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-4 text-sm text-slate-300">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-700">
+            <h4 class="font-bold text-hyrule-gold mb-2">1. 基礎五聲音階按鍵</h4>
+            <ul class="space-y-1.5 text-xs sm:text-sm">
+              <li class="flex justify-between"><span><strong>L 鍵</strong></span><span class="text-sky-300">低音 Re (D4)</span></li>
+              <li class="flex justify-between"><span><strong>R 鍵</strong></span><span class="text-sky-300">Fa (F4)</span></li>
+              <li class="flex justify-between"><span><strong>A 鍵</strong></span><span class="text-sky-300">La (A4)</span></li>
+              <li class="flex justify-between"><span><strong>Y 鍵</strong></span><span class="text-sky-300">Si (B4)</span></li>
+              <li class="flex justify-between"><span><strong>X 鍵</strong></span><span class="text-sky-300">高音 Re (D5)</span></li>
+            </ul>
+          </div>
+          <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-700">
+            <h4 class="font-bold text-hyrule-gold mb-2">2. 升降音修飾鍵</h4>
+            <ul class="space-y-1.5 text-xs sm:text-sm">
+              <li class="flex justify-between"><span><strong>左搖桿 ↑</strong></span><span class="text-sky-400">升 1 全音 (+2 半音)</span></li>
+              <li class="flex justify-between"><span><strong>左搖桿 ↓</strong></span><span class="text-sky-400">降 1 全音 (-2 半音)</span></li>
+              <li class="flex justify-between"><span><strong>十字鍵 ↑</strong></span><span class="text-emerald-400">升 1 半音 (+1 半音)</span></li>
+              <li class="flex justify-between"><span><strong>十字鍵 ↓</strong></span><span class="text-emerald-400">降 1 半音 (-1 半音)</span></li>
+              <li class="text-xs text-slate-400 pt-1 border-t border-slate-800">※ 同時推「左搖桿 ＋ 十字鍵」可升降 3 個半音（如 D4 降 3 半音成低音 B3，D5 升 3 半音成高音 F5）。</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-700 text-hyrule-goldLight">
+                <th class="py-2 px-2">音名 / 唱名</th>
+                <th class="py-2 px-2">簡譜</th>
+                <th class="py-2 px-2">Switch 2 推薦按法</th>
+                <th class="py-2 px-2">說明</th>
+              </tr>
+            </thead>
+            <tbody id="reference-table-body" class="divide-y divide-slate-800/80">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * =========================================================================
+     * 1. SWITCH 2 OCARINA OF TIME REMAKE NOTE MAPPING DATABASE (B3 to F5, 19 notes)
+     * =========================================================================
+     * Base Keys:
+     * - L = D4 (MIDI 62)
+     * - R = F4 (MIDI 65)
+     * - A = A4 (MIDI 69)
+     * - Y = B4 (MIDI 71)
+     * - X = D5 (MIDI 74)
+     * Modifiers:
+     * - stick: 'up' (+2), 'down' (-2), null
+     * - dpad:  'up' (+1), 'down' (-1), null
+     */
+    const NOTE_DATABASE = [
+      {
+        midi: 59, id: 'B3', pitchName: 'B3', solfege: '低音 Si', jianpu: '.7', freq: 246.94, isBlack: false, isBase: false,
+        staffStep: -2, // Below middle C ledger area
+        fingerings: [
+          { btn: 'L', stick: 'down', dpad: 'down', label: 'L + 左搖桿↓ + 十字鍵↓ (-3半音)' }
+        ]
+      },
+      {
+        midi: 60, id: 'C4', pitchName: 'C4', solfege: 'Do', jianpu: '1', freq: 261.63, isBlack: false, isBase: false,
+        staffStep: -1, // C4 ledger line
+        fingerings: [
+          { btn: 'L', stick: 'down', dpad: null, label: 'L + 左搖桿↓ (降全音)' }
+        ]
+      },
+      {
+        midi: 61, id: 'C#4', pitchName: 'C#4 / Db4', solfege: '#Do', jianpu: '#1', freq: 277.18, isBlack: true, isBase: false,
+        staffStep: -1, accidental: '#',
+        fingerings: [
+          { btn: 'L', stick: null, dpad: 'down', label: 'L + 十字鍵↓ (降半音)' }
+        ]
+      },
+      {
+        midi: 62, id: 'D4', pitchName: 'D4', solfege: 'Re', jianpu: '2', freq: 293.66, isBlack: false, isBase: true,
+        staffStep: 0, // Just below bottom line E4
+        fingerings: [
+          { btn: 'L', stick: null, dpad: null, label: '單按 L (基礎音)' }
+        ]
+      },
+      {
+        midi: 63, id: 'D#4', pitchName: 'D#4 / Eb4', solfege: '#Re', jianpu: '#2', freq: 311.13, isBlack: true, isBase: false,
+        staffStep: 0, accidental: '#',
+        fingerings: [
+          { btn: 'L', stick: null, dpad: 'up', label: 'L + 十字鍵↑ (升半音)' }
+        ]
+      },
+      {
+        midi: 64, id: 'E4', pitchName: 'E4', solfege: 'Mi', jianpu: '3', freq: 329.63, isBlack: false, isBase: false,
+        staffStep: 1, // Line 1 (Bottom line of treble staff)
+        fingerings: [
+          { btn: 'R', stick: null, dpad: 'down', label: 'R + 十字鍵↓ (降半音)' },
+          { btn: 'L', stick: 'up', dpad: null, label: 'L + 左搖桿↑ (升全音)' }
+        ]
+      },
+      {
+        midi: 65, id: 'F4', pitchName: 'F4', solfege: 'Fa', jianpu: '4', freq: 349.23, isBlack: false, isBase: true,
+        staffStep: 2, // Space 1
+        fingerings: [
+          { btn: 'R', stick: null, dpad: null, label: '單按 R (基礎音)' }
+        ]
+      },
+      {
+        midi: 66, id: 'F#4', pitchName: 'F#4 / Gb4', solfege: '#Fa', jianpu: '#4', freq: 369.99, isBlack: true, isBase: false,
+        staffStep: 2, accidental: '#',
+        fingerings: [
+          { btn: 'R', stick: null, dpad: 'up', label: 'R + 十字鍵↑ (升半音)' }
+        ]
+      },
+      {
+        midi: 67, id: 'G4', pitchName: 'G4', solfege: 'Sol', jianpu: '5', freq: 392.00, isBlack: false, isBase: false,
+        staffStep: 3, // Line 2
+        fingerings: [
+          { btn: 'R', stick: 'up', dpad: null, label: 'R + 左搖桿↑ (升全音)' },
+          { btn: 'A', stick: 'down', dpad: null, label: 'A + 左搖桿↓ (降全音)' }
+        ]
+      },
+      {
+        midi: 68, id: 'G#4', pitchName: 'G#4 / Ab4', solfege: '#Sol', jianpu: '#5', freq: 415.30, isBlack: true, isBase: false,
+        staffStep: 3, accidental: '#',
+        fingerings: [
+          { btn: 'A', stick: null, dpad: 'down', label: 'A + 十字鍵↓ (降半音)' }
+        ]
+      },
+      {
+        midi: 69, id: 'A4', pitchName: 'A4', solfege: 'La', jianpu: '6', freq: 440.00, isBlack: false, isBase: true,
+        staffStep: 4, // Space 2
+        fingerings: [
+          { btn: 'A', stick: null, dpad: null, label: '單按 A (基礎音)' }
+        ]
+      },
+      {
+        midi: 70, id: 'A#4', pitchName: 'A#4 / Bb4', solfege: 'bSi', jianpu: 'b7', freq: 466.16, isBlack: true, isBase: false,
+        staffStep: 5, accidental: 'b',
+        fingerings: [
+          { btn: 'Y', stick: null, dpad: 'down', label: 'Y + 十字鍵↓ (降半音)' },
+          { btn: 'A', stick: null, dpad: 'up', label: 'A + 十字鍵↑ (升半音)' }
+        ]
+      },
+      {
+        midi: 71, id: 'B4', pitchName: 'B4', solfege: 'Si', jianpu: '7', freq: 493.88, isBlack: false, isBase: true,
+        staffStep: 5, // Line 3 (Middle line)
+        fingerings: [
+          { btn: 'Y', stick: null, dpad: null, label: '單按 Y (基礎音)' }
+        ]
+      },
+      {
+        midi: 72, id: 'C5', pitchName: 'C5', solfege: '高音 Do', jianpu: '1.', freq: 523.25, isBlack: false, isBase: false,
+        staffStep: 6, // Space 3
+        fingerings: [
+          { btn: 'Y', stick: null, dpad: 'up', label: 'Y + 十字鍵↑ (升半音)' },
+          { btn: 'X', stick: 'down', dpad: null, label: 'X + 左搖桿↓ (降全音)' }
+        ]
+      },
+      {
+        midi: 73, id: 'C#5', pitchName: 'C#5 / Db5', solfege: '高音 #Do', jianpu: '#1.', freq: 554.37, isBlack: true, isBase: false,
+        staffStep: 6, accidental: '#',
+        fingerings: [
+          { btn: 'X', stick: null, dpad: 'down', label: 'X + 十字鍵↓ (降半音)' }
+        ]
+      },
+      {
+        midi: 74, id: 'D5', pitchName: 'D5', solfege: '高音 Re', jianpu: '2.', freq: 587.33, isBlack: false, isBase: true,
+        staffStep: 7, // Line 4
+        fingerings: [
+          { btn: 'X', stick: null, dpad: null, label: '單按 X (基礎音)' }
+        ]
+      },
+      {
+        midi: 75, id: 'D#5', pitchName: 'D#5 / Eb5', solfege: '高音 #Re', jianpu: '#2.', freq: 622.25, isBlack: true, isBase: false,
+        staffStep: 7, accidental: '#',
+        fingerings: [
+          { btn: 'X', stick: null, dpad: 'up', label: 'X + 十字鍵↑ (升半音)' }
+        ]
+      },
+      {
+        midi: 76, id: 'E5', pitchName: 'E5', solfege: '高音 Mi', jianpu: '3.', freq: 659.25, isBlack: false, isBase: false,
+        staffStep: 8, // Space 4 (Top space)
+        fingerings: [
+          { btn: 'X', stick: 'up', dpad: null, label: 'X + 左搖桿↑ (升全音)' }
+        ]
+      },
+      {
+        midi: 77, id: 'F5', pitchName: 'F5', solfege: '高音 Fa', jianpu: '4.', freq: 698.46, isBlack: false, isBase: false,
+        staffStep: 9, // Line 5 (Top line of treble staff)
+        fingerings: [
+          { btn: 'X', stick: 'up', dpad: 'up', label: 'X + 左搖桿↑ + 十字鍵↑ (+3半音)' }
+        ]
+      }
+    ];
+
+    const NOTE_BY_MIDI = {};
+    NOTE_DATABASE.forEach(n => { NOTE_BY_MIDI[n.midi] = n; });
+
+    // Preset Zelda Songs
+    const PRESET_SONGS = [
+      {
+        title: "薩爾達搖籃曲 (Zelda's Lullaby)",
+        notes: "Si Re+ La | Sol La Si Re+ La\nSi Re+ La | Sol La Si Re+ La"
+      },
+      {
+        title: "時之歌 (Song of Time)",
+        notes: "La Re Fa | La Re Fa\nLa Do+ Si Sol | Fa Sol La Re Do Mi Re"
+      },
+      {
+        title: "薩莉亞之歌 (Saria's Song)",
+        notes: "Fa La Si | Fa La Si\nFa La Si Mi+ Re+ | Si Do+ Si Sol Mi"
+      },
+      {
+        title: "風暴之歌 (Song of Storms)",
+        notes: "Re Fa Re+ | Re Fa Re+\nMi+ Fa+ Mi+ Fa+ Mi+ Do+ La"
+      },
+      {
+        title: "艾波娜之歌 (Epona's Song)",
+        notes: "Re+ Si La | Re+ Si La\nRe+ Si La Si La"
+      },
+      {
+        title: "太陽之歌 (Sun's Song)",
+        notes: "La Fa Re+ | La Fa Re+\nLa Si Do+ Re+ Mi+ Fa+"
+      },
+      {
+        title: "小星星 (全音階綜合練習)",
+        notes: "Do Do Sol Sol La La Sol | Fa Fa Mi Mi Re Re Do"
+      }
+    ];
+
+    /**
+     * =========================================================================
+     * 2. WEB AUDIO API - OCARINA SYNTHESIZER ENGINE
+     * =========================================================================
+     */
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playOcarinaTone(freq, duration = 0.42) {
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+
+        // Primary pure flute/ocarina tone (Sine + subtle Triangle)
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(freq, now);
+
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(freq, now);
+
+        // Subtle vibrato LFO for authentic ocarina warmth
+        const lfo = audioCtx.createOscillator();
+        const lfoGain = audioCtx.createGain();
+        lfo.frequency.setValueAtTime(5.2, now);
+        lfoGain.gain.setValueAtTime(2.5, now);
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc1.frequency);
+
+        // Soft lowpass filter
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1600, now);
+
+        const osc2Gain = audioCtx.createGain();
+        osc2Gain.gain.setValueAtTime(0.14, now);
+
+        // Breath envelope (soft attack, smooth release)
+        gainNode.gain.setValueAtTime(0.001, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.28, now + 0.055);
+        gainNode.gain.exponentialRampToValueAtTime(0.20, now + duration * 0.7);
+        gainNode.gain.exponentialRampToValueAtTime(0.0008, now + duration);
+
+        osc1.connect(filter);
+        osc2.connect(osc2Gain);
+        osc2Gain.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+        lfo.start(now);
+
+        osc1.stop(now + duration + 0.02);
+        osc2.stop(now + duration + 0.02);
+        lfo.stop(now + duration + 0.02);
+      } catch (e) {
+        console.warn('Audio playback skipped:', e);
+      }
+    }
+
+    /**
+     * =========================================================================
+     * 3. MULTI-FORMAT NOTE PARSER (Solfège, Letter Pitch, Jianpu)
+     * =========================================================================
+     */
+    function parseSingleToken(rawToken, { preferLowercaseLetterB = false } = {}) {
+      const token = rawToken.trim();
+      if (!token) return null;
+      if (token === '|' || token === '｜' || token === '/') {
+        return { type: 'bar' };
+      }
+
+      // Normalize unicode sharp while keeping ♭ distinct from letter 'b'
+      const normalized = token.replace(/♯/g, '#');
+
+      // Base semitone offset from C (C=0, D=2, E=4, F=5, G=7, A=9, B=11)
+      const baseMap = {
+        // Solfège
+        'do': 0, 're': 2, 'mi': 4, 'fa': 5, 'sol': 7, 'so': 7, 'la': 9, 'si': 11, 'ti': 11,
+        // Letter names
+        'c': 0, 'd': 2, 'e': 4, 'f': 5, 'g': 7, 'a': 9, 'b': 11,
+        // Jianpu numbers
+        '1': 0, '2': 2, '3': 4, '4': 5, '5': 7, '6': 9, '7': 11
+      };
+
+      const accOffset = (sym) => (sym === '#' ? 1 : (sym === 'b' || sym === '♭' ? -1 : 0));
+      const shiftFromModifiers = (leadDots = '', trailMods = '') => {
+        let shift = 0;
+        if (leadDots) shift -= leadDots.length;
+        if (trailMods) {
+          shift += (trailMods.match(/\./g) || []).length;
+          shift += (trailMods.match(/\+/g) || []).length;
+          shift -= (trailMods.match(/-/g) || []).length;
+        }
+        return shift;
+      };
+
+      let baseKey = null;
+      let accidentalOffset = 0;
+      let explicitOctave = null;
+      let relativeShift = 0;
+
+      // 1) Solfège (e.g., Do, #Fa, bSi, Sib, Re+, Si-, Do5, Fa+, #Do+, bRe+)
+      const solfegeRe = /^([#b♭])?(\.*)(do|re|mi|fa|sol|so|la|si|ti)([#b♭])?([2-6])?([.+-]*)([#b♭])?$/i;
+      const solMatch = normalized.match(solfegeRe);
+
+      // 2) Letter pitch (e.g., B3, B4, Bb4, B♭4, F#4, #F4, Eb5, F5, B-)
+      //    Uppercase B3/B4 is always letter B; lowercase b + [1-7] (e.g. b7, b3)
+      //    is Jianpu flat unless the sheet uses lowercase letter-pitch style (c4, d4...).
+      const isAmbiguousLowerB = /^b[1-7][.+-]*$/.test(normalized);
+      const treatLowerBAsJianpu = isAmbiguousLowerB && !(preferLowercaseLetterB && /^b[2-6]$/.test(normalized));
+
+      const letterRe = /^([#♭]|b(?=[A-Ga-g]))?(\.*)([A-Ga-g])([#b♭])?([2-6])?([.+-]*)([#b♭])?$/;
+      const letterMatch = !solMatch && !treatLowerBAsJianpu ? normalized.match(letterRe) : null;
+
+      // 3) Jianpu (e.g., .7, 1, #4, b7, ♭3, 1., 2., 3., 4., #1.)
+      const jianpuRe = /^([#b♭])?(\.*)([1-7])([#b♭])?([.+-]*)([#b♭])?$/;
+      const jianpuMatch = !solMatch && !letterMatch ? normalized.match(jianpuRe) : null;
+
+      if (solMatch) {
+        const [, preAcc, leadDots, name, midAcc, octDigit, trailMods, postAcc] = solMatch;
+        baseKey = name.toLowerCase();
+        accidentalOffset = accOffset(preAcc) + accOffset(midAcc) + accOffset(postAcc);
+        if (octDigit) explicitOctave = parseInt(octDigit, 10);
+        relativeShift = shiftFromModifiers(leadDots, trailMods);
+      } else if (letterMatch) {
+        const [, preAcc, leadDots, name, midAcc, octDigit, trailMods, postAcc] = letterMatch;
+        baseKey = name.toLowerCase();
+        accidentalOffset = accOffset(preAcc) + accOffset(midAcc) + accOffset(postAcc);
+        if (octDigit) explicitOctave = parseInt(octDigit, 10);
+        relativeShift = shiftFromModifiers(leadDots, trailMods);
+      } else if (jianpuMatch) {
+        const [, preAcc, leadDots, digit, midAcc, trailMods, postAcc] = jianpuMatch;
+        baseKey = digit;
+        accidentalOffset = accOffset(preAcc) + accOffset(midAcc) + accOffset(postAcc);
+        relativeShift = shiftFromModifiers(leadDots, trailMods);
+      } else {
+        return { type: 'unknown', raw: rawToken };
+      }
+
+      // Default octave is 4 (Middle C4 = MIDI 60)
+      const octave = explicitOctave !== null ? explicitOctave : (4 + relativeShift);
+      const midi = (octave + 1) * 12 + baseMap[baseKey] + accidentalOffset;
+
+      if (NOTE_BY_MIDI[midi]) {
+        return { type: 'note', note: NOTE_BY_MIDI[midi], raw: rawToken };
+      } else {
+        return { type: 'out_of_range', raw: rawToken, midi };
+      }
+    }
+
+    function parseSheetMusic(text) {
+      const lines = text.split(/\r?\n/);
+      const parsedLines = [];
+      const warnings = [];
+      let totalNotes = 0;
+      const preferLowercaseLetterB = /(?:^|[\s,，、|｜/])[acdefg][#♯b♭]?[2-6](?=$|[\s,，、|｜/])/.test(text);
+
+      lines.forEach(line => {
+        // Split by spaces, commas, or keep '|' isolated
+        const cleanedLine = line.replace(/([|｜/])/g, ' $1 ');
+        const rawTokens = cleanedLine.split(/[\s,，、]+/).filter(Boolean);
+        if (rawTokens.length === 0) return;
+
+        const lineItems = [];
+        rawTokens.forEach(tok => {
+          const parsed = parseSingleToken(tok, { preferLowercaseLetterB });
+          if (!parsed) return;
+          if (parsed.type === 'note') {
+            lineItems.push({ ...parsed, globalIndex: totalNotes++ });
+          } else if (parsed.type === 'bar') {
+            lineItems.push(parsed);
+          } else if (parsed.type === 'out_of_range') {
+            warnings.push(`「${parsed.raw}」超出陶笛音域（支援範圍：B3 低音 Si ～ F5 高音 Fa）`);
+          } else {
+            warnings.push(`無法辨識記號「${parsed.raw}」`);
+          }
+        });
+
+        if (lineItems.length > 0) {
+          parsedLines.push(lineItems);
+        }
+      });
+
+      return { parsedLines, warnings, totalNotes };
+    }
+
+    /**
+     * =========================================================================
+     * 4. UI RENDERING: VIRTUAL PIANO, MINI STAFF & CONTROLLER DIAGRAMS
+     * =========================================================================
+     */
+    function renderVirtualPiano() {
+      const container = document.getElementById('virtual-piano');
+      const whiteNotes = NOTE_DATABASE.filter(n => !n.isBlack);
+      const blackNotes = NOTE_DATABASE.filter(n => n.isBlack);
+
+      container.innerHTML = '';
+
+      // Render White Keys
+      whiteNotes.forEach((note, idx) => {
+        const keyBtn = document.createElement('button');
+        keyBtn.type = 'button';
+        keyBtn.dataset.midi = note.midi;
+        keyBtn.className = 'piano-white flex-1 h-full relative flex flex-col justify-end items-center pb-2.5 px-1 cursor-pointer focus:outline-none group';
+        keyBtn.onclick = () => handlePianoKeyClick(note);
+
+        // Base key badge (L, R, A, Y, X)
+        const baseBadge = note.isBase
+          ? `<span class="mb-1.5 px-1.5 py-0.5 rounded text-[11px] font-black bg-hyrule-gold text-slate-950 shadow-sm">${note.fingerings[0].btn}</span>`
+          : `<span class="mb-1.5 text-[10px] font-semibold text-slate-400 group-hover:text-slate-700">${note.fingerings[0].btn}</span>`;
+
+        keyBtn.innerHTML = `
+          ${baseBadge}
+          <span class="text-xs font-bold text-slate-800 leading-tight">${note.solfege.replace('低音 ', '').replace('高音 ', '')}</span>
+          <span class="text-[10px] font-mono text-slate-500">${note.id}</span>
+        `;
+        container.appendChild(keyBtn);
+      });
+
+      // Render Black Keys positioned accurately between white keys
+      // White key indices: 0:B3, 1:C4, 2:D4, 3:E4, 4:F4, 5:G4, 6:A4, 7:B4, 8:C5, 9:D5, 10:E5, 11:F5 (Total 12 white keys)
+      const whiteCount = whiteNotes.length;
+      const blackPositions = {
+        61: 1, // C#4 between C4(1) and D4(2)
+        63: 2, // D#4 between D4(2) and E4(3)
+        66: 4, // F#4 between F4(4) and G4(5)
+        68: 5, // G#4 between G4(5) and A4(6)
+        70: 6, // A#4 between A4(6) and B4(7)
+        73: 8, // C#5 between C5(8) and D5(9)
+        75: 9  // D#5 between D5(9) and E5(10)
+      };
+
+      blackNotes.forEach(note => {
+        const leftWhiteIdx = blackPositions[note.midi];
+        if (leftWhiteIdx === undefined) return;
+        const leftPercent = ((leftWhiteIdx + 1) / whiteCount) * 100;
+
+        const blackBtn = document.createElement('button');
+        blackBtn.type = 'button';
+        blackBtn.dataset.midi = note.midi;
+        blackBtn.style.left = `calc(${leftPercent}% - 17px)`;
+        blackBtn.style.width = '34px';
+        blackBtn.className = 'piano-black absolute top-0 h-24 z-10 flex flex-col justify-end items-center pb-2 cursor-pointer focus:outline-none';
+        blackBtn.onclick = (e) => {
+          e.stopPropagation();
+          handlePianoKeyClick(note);
+        };
+
+        blackBtn.innerHTML = `
+          <span class="text-[10px] font-bold text-sky-300 leading-none mb-0.5">${note.id}</span>
+          <span class="text-[9px] text-slate-400">${note.solfege.replace('高音 ', '')}</span>
+        `;
+        container.appendChild(blackBtn);
+      });
+    }
+
+    function handlePianoKeyClick(note) {
+      playOcarinaTone(note.freq, 0.38);
+      const input = document.getElementById('note-input');
+      // Convert solfege into concise token
+      const tokenMap = {
+        'B3': 'Si-', 'C4': 'Do', 'C#4': '#Do', 'D4': 'Re', 'D#4': '#Re',
+        'E4': 'Mi', 'F4': 'Fa', 'F#4': '#Fa', 'G4': 'Sol', 'G#4': '#Sol',
+        'A4': 'La', 'A#4': 'bSi', 'B4': 'Si', 'C5': 'Do+', 'C#5': '#Do+',
+        'D5': 'Re+', 'D#5': '#Re+', 'E5': 'Mi+', 'F5': 'Fa+'
+      };
+      const tok = tokenMap[note.id] || note.id;
+      const currentVal = input.value;
+      const needsSpace = currentVal.length > 0 && !/[\s\n|]$/.test(currentVal);
+      input.value = currentVal + (needsSpace ? ' ' : '') + tok;
+      document.getElementById('output-song-title').innerHTML = `<span>🎶 自訂編曲指法圖譜</span>`;
+      updateTablature();
+    }
+
+    // Generate Mini 5-Line Musical Staff SVG for a Note
+    function createMiniStaffSVG(note) {
+      // Staff lines from bottom to top:
+      // E4 (step 1) -> y = 38
+      // G4 (step 3) -> y = 31
+      // B4 (step 5) -> y = 24
+      // D5 (step 7) -> y = 17
+      // F5 (step 9) -> y = 10
+      // Formula: y = 38 - (step - 1) * 3.5
+      const y = 38 - (note.staffStep - 1) * 3.5;
+      const isDarkPrint = false;
+
+      let ledgerLines = '';
+      if (note.staffStep <= -1) {
+        // C4 ledger line at y = 45
+        ledgerLines += `<line x1="20" y1="45" x2="40" y2="45" stroke="#e5c158" stroke-width="1.3" />`;
+      }
+
+      const accidentalText = note.accidental
+        ? `<text x="16" y="${y + 4}" fill="#38bdf8" font-size="12" font-weight="bold" font-family="serif">${note.accidental === '#' ? '♯' : '♭'}</text>`
+        : '';
+
+      const stemUp = note.staffStep < 5;
+      const stemX = stemUp ? 34.2 : 25.8;
+      const stemY2 = stemUp ? y - 16 : y + 16;
+
+      return `
+        <svg class="w-16 h-12 mx-auto overflow-visible" viewBox="0 0 60 52">
+          <!-- 5 Staff Lines -->
+          <line x1="6" y1="10" x2="54" y2="10" stroke="rgba(148,163,184,0.35)" stroke-width="1" />
+          <line x1="6" y1="17" x2="54" y2="17" stroke="rgba(148,163,184,0.35)" stroke-width="1" />
+          <line x1="6" y1="24" x2="54" y2="24" stroke="rgba(148,163,184,0.35)" stroke-width="1" />
+          <line x1="6" y1="31" x2="54" y2="31" stroke="rgba(148,163,184,0.35)" stroke-width="1" />
+          <line x1="6" y1="38" x2="54" y2="38" stroke="rgba(148,163,184,0.35)" stroke-width="1" />
+          ${ledgerLines}
+          ${accidentalText}
+          <!-- Note Head & Stem -->
+          <ellipse cx="30" cy="${y}" rx="4.8" ry="3.6" transform="rotate(-18 30 ${y})" fill="#fce596" />
+          <line x1="${stemX}" y1="${y}" x2="${stemX}" y2="${stemY2}" stroke="#fce596" stroke-width="1.5" />
+        </svg>
+      `;
+    }
+
+    // Generate Switch 2 Controller Button Graphic
+    function renderMainButtonGraphic(btnChar) {
+      if (btnChar === 'L' || btnChar === 'R') {
+        return `
+          <div class="sw-shoulder w-14 h-8 flex items-center justify-center text-white font-black text-base tracking-wider select-none">
+            ${btnChar}
+          </div>
+        `;
+      }
+      // Face Buttons (A, Y, X) with subtle Switch color accents
+      const accentMap = {
+        'A': 'text-rose-300 border-rose-300/80',
+        'Y': 'text-emerald-300 border-emerald-300/80',
+        'X': 'text-sky-300 border-sky-300/80'
+      };
+      const cls = accentMap[btnChar] || 'text-white border-slate-300';
+      return `
+        <div class="sw-face-btn w-10 h-10 flex items-center justify-center font-black text-base ${cls} select-none">
+          ${btnChar}
+        </div>
+      `;
+    }
+
+    // Generate Left Stick (Whole Tone) & D-Pad (Semitone) Modifier Graphic
+    function renderModifierIcons(stick, dpad) {
+      if (!stick && !dpad) {
+        return `
+          <div class="h-11 flex items-center justify-center">
+            <span class="text-[11px] px-2 py-0.5 rounded-full bg-hyrule-gold/15 text-hyrule-gold border border-hyrule-gold/30 font-medium">
+              直接單按
+            </span>
+          </div>
+        `;
+      }
+
+      let html = `<div class="flex items-center justify-center gap-2 min-h-[44px]">`;
+
+      if (stick) {
+        const isUp = stick === 'up';
+        html += `
+          <div class="flex flex-col items-center bg-sky-950/80 border border-sky-400/50 rounded-lg px-2 py-1 shadow-sm" title="左搖桿${isUp ? '上推（升全音）' : '下推（降全音）'}">
+            <div class="flex items-center gap-0.5 text-sky-300 font-black text-xs">
+              <span class="w-4 h-4 rounded-full bg-slate-800 border border-sky-400 flex items-center justify-center text-[9px] text-white">L</span>
+              <span class="text-sm leading-none">${isUp ? '↑' : '↓'}</span>
+            </div>
+            <span class="text-[10px] font-bold text-sky-200 mt-0.5">${isUp ? '升全音' : '降全音'}</span>
+          </div>
+        `;
+      }
+
+      if (dpad) {
+        const isUp = dpad === 'up';
+        html += `
+          <div class="flex flex-col items-center bg-emerald-950/80 border border-emerald-400/50 rounded-lg px-2 py-1 shadow-sm" title="十字鍵${isUp ? '上（升半音）' : '下（降半音）'}">
+            <div class="flex items-center gap-0.5 text-emerald-300 font-black text-xs">
+              <svg class="w-3.5 h-3.5 text-emerald-300" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z"/>
+              </svg>
+              <span class="text-sm leading-none">${isUp ? '↑' : '↓'}</span>
+            </div>
+            <span class="text-[10px] font-bold text-emerald-200 mt-0.5">${isUp ? '升半音' : '降半音'}</span>
+          </div>
+        `;
+      }
+
+      html += `</div>`;
+      return html;
+    }
+
+    // Track user-toggled alternative fingerings per card index
+    const altFingeringState = {};
+    let currentParsedNotesFlat = [];
+
+    function cycleAlternativeFingering(event, globalIdx) {
+      event.stopPropagation();
+      altFingeringState[globalIdx] = ((altFingeringState[globalIdx] || 0) + 1) % 2;
+      updateTablature();
+    }
+
+    function updateTablature() {
+      const rawText = document.getElementById('note-input').value;
+      const { parsedLines, warnings, totalNotes } = parseSheetMusic(rawText);
+
+      // Update warning banner
+      const warnBanner = document.getElementById('warning-banner');
+      const warnText = document.getElementById('warning-text');
+      if (warnings.length > 0) {
+        warnBanner.classList.remove('hidden');
+        const uniqueWarnings = [...new Set(warnings)];
+        warnText.innerHTML = `<strong>提醒：</strong> ${uniqueWarnings.join('、')}`;
+      } else {
+        warnBanner.classList.add('hidden');
+      }
+
+      document.getElementById('note-count-badge').textContent = `共 ${totalNotes} 音`;
+
+      const outputContainer = document.getElementById('tablature-output');
+      currentParsedNotesFlat = [];
+
+      if (totalNotes === 0) {
+        outputContainer.innerHTML = `
+          <div class="text-center py-12 text-slate-400">
+            <p class="text-base font-medium">尚未輸入任何有效音符</p>
+            <p class="text-xs mt-1">請點擊上方虛擬琴鍵，或選擇一首經典薩爾達樂曲開始轉換！</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+
+      parsedLines.forEach((lineItems, lineIdx) => {
+        html += `<div class="flex flex-wrap items-stretch gap-3 sm:gap-3.5 pb-4 ${lineIdx < parsedLines.length - 1 ? 'border-b border-slate-800/90' : ''}">`;
+
+        lineItems.forEach(item => {
+          if (item.type === 'bar') {
+            html += `
+              <div class="flex items-center justify-center px-1 select-none" title="小節線">
+                <div class="w-0.5 h-36 bg-gradient-to-b from-transparent via-hyrule-gold/60 to-transparent rounded-full"></div>
+              </div>
+            `;
+            return;
+          }
+
+          const note = item.note;
+          const idx = item.globalIndex;
+          currentParsedNotesFlat.push(note);
+
+          const fingeringIdx = (altFingeringState[idx] || 0) % note.fingerings.length;
+          const activeFingering = note.fingerings[fingeringIdx];
+          const hasAlt = note.fingerings.length > 1;
+
+          html += `
+            <div
+              id="note-card-${idx}"
+              onclick="playOcarinaTone(${note.freq}, 0.42); highlightCard(${idx}, 400);"
+              class="zelda-card rounded-xl p-3 w-[116px] sm:w-[126px] flex flex-col items-center justify-between cursor-pointer relative group select-none"
+            >
+              <!-- Top Note Header: Solfege & Pitch -->
+              <div class="w-full flex items-center justify-between text-xs border-b border-slate-700/70 pb-1.5">
+                <span class="font-bold text-hyrule-goldLight print-dark-text">${note.solfege}</span>
+                <span class="font-mono text-[11px] text-slate-400">${note.id}</span>
+              </div>
+
+              <!-- Mini 5-Line Musical Staff -->
+              <div class="my-1 w-full">
+                ${createMiniStaffSVG(note)}
+              </div>
+
+              <!-- Switch 2 Main Button Graphic -->
+              <div class="my-1.5 flex items-center justify-center">
+                ${renderMainButtonGraphic(activeFingering.btn)}
+              </div>
+
+              <!-- Modifiers (Left Stick / D-Pad) -->
+              <div class="w-full mt-1 pt-1.5 border-t border-slate-800/90">
+                ${renderModifierIcons(activeFingering.stick, activeFingering.dpad)}
+              </div>
+
+              <!-- Alternative Fingering Switcher Button (if available) -->
+              ${hasAlt ? `
+                <button
+                  type="button"
+                  onclick="cycleAlternativeFingering(event, ${idx})"
+                  class="mt-1.5 w-full text-[10px] py-0.5 px-1.5 rounded bg-slate-800/90 hover:bg-hyrule-gold/25 text-slate-300 hover:text-hyrule-goldLight border border-slate-700 transition no-print"
+                  title="此音符有兩種按法，點擊切換"
+                >
+                  ↻ 換另一種按法
+                </button>
+              ` : ''}
+            </div>
+          `;
+        });
+
+        html += `</div>`;
+      });
+
+      outputContainer.innerHTML = html;
+    }
+
+    function highlightCard(idx, durationMs = 380) {
+      const card = document.getElementById(`note-card-${idx}`);
+      if (!card) return;
+      card.classList.add('playing-active');
+      setTimeout(() => {
+        card.classList.remove('playing-active');
+      }, durationMs);
+    }
+
+    /**
+     * =========================================================================
+     * 5. MELODY PLAYBACK ENGINE
+     * =========================================================================
+     */
+    let isPlaying = false;
+    let playbackTimers = [];
+
+    function stopMelody() {
+      isPlaying = false;
+      playbackTimers.forEach(t => clearTimeout(t));
+      playbackTimers = [];
+      document.querySelectorAll('.playing-active').forEach(el => el.classList.remove('playing-active'));
+      const btnText = document.getElementById('play-btn-text');
+      const playIcon = document.getElementById('play-icon');
+      btnText.textContent = '試聽陶笛旋律';
+      playIcon.innerHTML = `<path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>`;
+    }
+
+    function togglePlayMelody() {
+      if (isPlaying) {
+        stopMelody();
+        return;
+      }
+      if (currentParsedNotesFlat.length === 0) return;
+
+      isPlaying = true;
+      const tempoMs = parseInt(document.getElementById('tempo-select').value, 10);
+      const btnText = document.getElementById('play-btn-text');
+      const playIcon = document.getElementById('play-icon');
+      btnText.textContent = '停止播放';
+      playIcon.innerHTML = `<rect x="5" y="4" width="4" height="12" rx="1"/><rect x="11" y="4" width="4" height="12" rx="1"/>`;
+
+      currentParsedNotesFlat.forEach((note, idx) => {
+        const timer = setTimeout(() => {
+          if (!isPlaying) return;
+          playOcarinaTone(note.freq, (tempoMs / 1000) * 0.92);
+          const card = document.getElementById(`note-card-${idx}`);
+          if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            highlightCard(idx, tempoMs * 0.88);
+          }
+        }, idx * tempoMs);
+        playbackTimers.push(timer);
+      });
+
+      const endTimer = setTimeout(() => {
+        stopMelody();
+      }, currentParsedNotesFlat.length * tempoMs + 150);
+      playbackTimers.push(endTimer);
+    }
+
+    /**
+     * =========================================================================
+     * 6. HELPER ACTIONS (Presets, Copy Text, Guide Modal)
+     * =========================================================================
+     */
+    function renderPresets() {
+      const container = document.getElementById('preset-buttons');
+      PRESET_SONGS.forEach(song => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-900/90 hover:bg-hyrule-gold/20 text-slate-200 hover:text-hyrule-goldLight border border-slate-700 hover:border-hyrule-gold/50 transition';
+        btn.textContent = song.title;
+        btn.onclick = () => {
+          stopMelody();
+          document.getElementById('note-input').value = song.notes;
+          document.getElementById('output-song-title').innerHTML = `<span>🎶 ${song.title} — 指法圖譜</span>`;
+          updateTablature();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function insertSeparator() {
+      const input = document.getElementById('note-input');
+      const val = input.value;
+      const needsSpace = val.length > 0 && !/[\s\n]$/.test(val);
+      input.value = val + (needsSpace ? ' | ' : '| ');
+      input.focus();
+      updateTablature();
+    }
+
+    function clearInput() {
+      stopMelody();
+      document.getElementById('note-input').value = '';
+      document.getElementById('output-song-title').innerHTML = `<span>🎶 Switch 2 陶笛按鍵指法圖譜</span>`;
+      updateTablature();
+    }
+
+    function copyShareText() {
+      if (currentParsedNotesFlat.length === 0) return;
+      const lines = currentParsedNotesFlat.map((n, idx) => {
+        const fIdx = (altFingeringState[idx] || 0) % n.fingerings.length;
+        return `${n.solfege}(${n.id}): ${n.fingerings[fIdx].label}`;
+      });
+      const textToCopy = `【薩爾達傳說 時之笛 Switch 2 陶笛指法表】\n` + lines.join('\n');
+
+      const tempArea = document.createElement('textarea');
+      tempArea.value = textToCopy;
+      document.body.appendChild(tempArea);
+      tempArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempArea);
+
+      const statusEl = document.getElementById('copy-status');
+      const orig = statusEl.textContent;
+      statusEl.textContent = '已複製到剪貼簿！';
+      setTimeout(() => { statusEl.textContent = orig; }, 2000);
+    }
+
+    function toggleGuideModal() {
+      const modal = document.getElementById('guide-modal');
+      if (modal.classList.contains('hidden')) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function populateReferenceTable() {
+      const tbody = document.getElementById('reference-table-body');
+      tbody.innerHTML = NOTE_DATABASE.map(n => `
+        <tr class="${n.isBase ? 'bg-hyrule-gold/10 text-hyrule-goldLight font-semibold' : 'text-slate-300'}">
+          <td class="py-1.5 px-2">${n.id} (${n.solfege})</td>
+          <td class="py-1.5 px-2 font-mono">${n.jianpu}</td>
+          <td class="py-1.5 px-2 text-sky-300">${n.fingerings.map(f => f.label).join(' 或 ')}</td>
+          <td class="py-1.5 px-2 text-slate-400">${n.isBase ? '★ 基礎按鍵' : '組合升降音'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Initialize Application on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderVirtualPiano();
+      renderPresets();
+      populateReferenceTable();
+
+      const inputEl = document.getElementById('note-input');
+      inputEl.addEventListener('input', () => {
+        stopMelody();
+        updateTablature();
+      });
+
+      // Load Zelda's Lullaby by default so user immediately sees rich visual output
+      inputEl.value = PRESET_SONGS[0].notes;
+      document.getElementById('output-song-title').innerHTML = `<span>🎶 ${PRESET_SONGS[0].title} — 指法圖譜</span>`;
+      updateTablature();
+    });
+  </script>
+</body>
+</html>
